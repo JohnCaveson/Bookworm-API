@@ -1,9 +1,20 @@
+using Bookworm.DTOs;
+using Bookworm.Repository;
+using DbContexts;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//In-Memory DB
+builder.Services.AddDbContext<BookClubDbContext>(options => options.UseInMemoryDatabase("items"));
+
+//Dependency Injection
+builder.Services.AddScoped<IBookClubRepository, BookClubRepository>();
 
 var app = builder.Build();
 
@@ -36,9 +47,10 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-app.MapPost("/createBookClub", (string bookclubName) =>
+app.MapPost("/createBookClub", async (BookClubDTO dto, IBookClubRepository bookClubRepository) =>
 {
-    // Going to use entity framework to persist data
+    var t = await bookClubRepository.Create(dto);
+    return t;
 })
 .WithName("CreateBookClub")
 .WithOpenApi();
