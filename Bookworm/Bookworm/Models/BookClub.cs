@@ -6,8 +6,5 @@ namespace Bookworm.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public Poll Poll { get; set; }
-        public Book CurrentBook { get; set; }
-        public List<Member> Members { get; set; }
     }
 }
